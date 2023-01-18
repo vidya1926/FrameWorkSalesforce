@@ -6,11 +6,7 @@
 	<artifactId>Framework</artifactId>
 	<version>1.0.0</version>
 	<dependencies>
-		<dependency>
-			<groupId>io.github.bonigarcia</groupId>
-			<artifactId>webdrivermanager</artifactId>
-			<version>4.1.0</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
@@ -19,12 +15,12 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>3.141.59</version>
+			<version>4.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>7.3.0</version>
+			<version>7.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.rest-assured</groupId>

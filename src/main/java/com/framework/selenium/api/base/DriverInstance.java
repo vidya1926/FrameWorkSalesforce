@@ -1,5 +1,7 @@
 package com.framework.selenium.api.base;
 
+import java.time.Duration;
+
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -13,20 +15,21 @@ public class DriverInstance  {
 	private static final ThreadLocal<WebDriverWait> wait = new  ThreadLocal<WebDriverWait>();
 
 	public void setWait() {
-		wait.set(new WebDriverWait(getDriver(), 30));
+		wait.set(new WebDriverWait(getDriver(), Duration.ofSeconds(30)));
 	}
 
 	public WebDriverWait getWait() {
 		return wait.get();
 	}
 
+	//setter
 	public void setDriver(String browser, boolean headless) {		
 		switch (browser) {
 		case "chrome":
 			ChromeOptions options = new ChromeOptions();
 			options.addArguments("--start-maximized"); 
 			options.addArguments("--disable-notifications"); 
-			options.addArguments("--incognito");
+		//	options.addArguments("--incognito");
 			remoteWebdriver.set(new ChromeDriver(options));
 			break;
 		case "firefox":
@@ -38,6 +41,8 @@ public class DriverInstance  {
 			break;
 		}
 	}
+	
+	//getter
 	public RemoteWebDriver getDriver() {
 		return remoteWebdriver.get();
 	}

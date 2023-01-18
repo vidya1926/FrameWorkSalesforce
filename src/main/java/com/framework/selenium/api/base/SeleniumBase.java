@@ -6,6 +6,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,15 +35,12 @@ import com.framework.selenium.api.design.Element;
 import com.framework.selenium.api.design.Locators;
 import com.framework.utils.Reporter;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-
-
-public class SeleniumBase extends Reporter implements Browser, Element  {
+public class SeleniumBase extends Reporter implements Browser, Element {
 	protected Actions act;
 
 	public static String projectId;
 	public static String auctionRef;
-	
+
 	protected String getAttribute(WebElement ele, String attributeValue) {
 		String val = "";
 		try {
@@ -57,7 +55,7 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 		act = new Actions(getDriver());
 		act.moveToElement(ele).perform();
 	}
-	
+
 	protected void dragAndDrop(WebElement eleSoutce, WebElement eleTarget) {
 		act = new Actions(getDriver());
 		act.dragAndDrop(eleSoutce, eleTarget).perform();
@@ -92,7 +90,7 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 			e.printStackTrace();
 		}
 		try {
-			WebDriverWait wait = new WebDriverWait(getDriver(), 20);
+			WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
 			wait.until(ExpectedConditions.visibilityOf(element));
 		} catch (Exception e) {
 			reportStep("Element did not appear after 20 seconds", "fail", false);
@@ -101,12 +99,11 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 
 	}
 
-
 	@Override
 	public void click(WebElement ele) {
 		try {
-			ele.isDisplayed(); // @FindBy return the proxy even if it does not exist !! 
-		}catch (NoSuchElementException e) {
+			ele.isDisplayed(); // @FindBy return the proxy even if it does not exist !!
+		} catch (NoSuchElementException e) {
 			reportStep("The Element " + ele + " is not found", "fail");
 		}
 
@@ -124,7 +121,7 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 			} catch (Exception e) {
 				boolean bFound = false;
 				int totalTime = 0;
-				while(!bFound && totalTime < 10000) {
+				while (!bFound && totalTime < 10000) {
 					try {
 						Thread.sleep(500);
 						ele.click();
@@ -133,9 +130,9 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 					} catch (Exception e1) {
 						bFound = false;
 					}
-					totalTime = totalTime+500;						
+					totalTime = totalTime + 500;
 				}
-				if(!bFound)
+				if (!bFound)
 					ele.click();
 			}
 		} catch (StaleElementReferenceException e) {
@@ -149,11 +146,11 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 			reportStep("The Element " + ele + " could not be clicked due to: " + e.getMessage(), "fail");
 		}
 	}
-	
+
 	public void clickUsingJs(WebElement ele) {
 		try {
-			ele.isDisplayed(); // @FindBy return the proxy even if it does not exist !! 
-		}catch (NoSuchElementException e) {
+			ele.isDisplayed(); // @FindBy return the proxy even if it does not exist !!
+		} catch (NoSuchElementException e) {
 			reportStep("The Element " + ele + " is not found", "fail");
 		}
 
@@ -164,7 +161,7 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 			} catch (Exception e) {
 				boolean bFound = false;
 				int totalTime = 0;
-				while(!bFound && totalTime < 10000) {
+				while (!bFound && totalTime < 10000) {
 					try {
 						Thread.sleep(500);
 						getDriver().executeScript("arguments[0].click()", ele);
@@ -173,9 +170,9 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 					} catch (Exception e1) {
 						bFound = false;
 					}
-					totalTime = totalTime+500;						
+					totalTime = totalTime + 500;
 				}
-				if(!bFound)
+				if (!bFound)
 					getDriver().executeScript("arguments[0].click()", ele);
 			}
 		} catch (StaleElementReferenceException e) {
@@ -189,7 +186,7 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 
 	public void click(Locators locatorType, String value) {
 		String text = "";
-		WebElement ele = locateElement(locatorType,value);
+		WebElement ele = locateElement(locatorType, value);
 		try {
 			try {
 				Thread.sleep(500);
@@ -203,19 +200,19 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 			} catch (Exception e) {
 				boolean bFound = false;
 				int totalTime = 0;
-				while(!bFound && totalTime < 10000) {
+				while (!bFound && totalTime < 10000) {
 					try {
 						Thread.sleep(500);
-						ele = locateElement(locatorType,value);
+						ele = locateElement(locatorType, value);
 						ele.click();
 						bFound = true;
 
 					} catch (Exception e1) {
 						bFound = false;
 					}
-					totalTime = totalTime+500;						
+					totalTime = totalTime + 500;
 				}
-				if(!bFound)
+				if (!bFound)
 					ele.click();
 			}
 		} catch (StaleElementReferenceException e) {
@@ -320,6 +317,7 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 		}
 
 	}
+
 	public void type(WebElement ele, String data) {
 		try {
 			getWait().until(ExpectedConditions.visibilityOf(ele));
@@ -542,7 +540,7 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 			setWait();
 			act = new Actions(getDriver());
 			getDriver().manage().window().maximize();
-			getDriver().manage().timeouts().implicitlyWait(90, TimeUnit.SECONDS);
+			getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(90));
 			getDriver().get(url);
 			reportStep("The Browser Launched in chrome browser with URL " + url, "pass");
 		} catch (Exception e) {
@@ -556,22 +554,23 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 		try {
 			if (browser.equalsIgnoreCase("chrome")) {
 				System.setProperty("webdriver.chrome.silentOutput", "true");
-			//	System.setProperty("webdriver.chrome.driver", "./drivers/chromedriver.exe");
-				WebDriverManager.chromedriver().setup();
+				// System.setProperty("webdriver.chrome.driver", "./drivers/chromedriver.exe");
+
 				setDriver("chrome", headless);
 			} else if (browser.equalsIgnoreCase("firefox")) {
-				//System.setProperty("webdriver.gecko.driver", "./drivers/geckodriver.exe");
-				WebDriverManager.firefoxdriver().setup();
+				// System.setProperty("webdriver.gecko.driver", "./drivers/geckodriver.exe");
+
 				setDriver("firefox", headless);
 			} else if (browser.equalsIgnoreCase("ie")) {
-				//System.setProperty("webdriver.ie.driver", "./drivers/IEDriverServer.exe");
-				 WebDriverManager.iedriver().setup();
-				setDriver("ie",false);
+				// System.setProperty("webdriver.ie.driver", "./drivers/IEDriverServer.exe");
+
+				setDriver("ie", false);
 			}
 			setWait();
 			getDriver().manage().window().maximize();
-			getDriver().manage().timeouts().implicitlyWait(90, TimeUnit.SECONDS);
-			getDriver().manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
+			getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(90));
+			getDriver().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
+		
 			getDriver().get(url);
 		} catch (WebDriverException e) {
 			e.printStackTrace();
@@ -619,7 +618,7 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 	@Override
 	public WebElement locateElement(String value) {
 		try {
-			WebElement findElementById = getDriver().findElementById(value);
+			WebElement findElementById = getDriver().findElement(By.id(value));
 			return findElementById;
 		} catch (NoSuchElementException e) {
 			reportStep("The Element with locator id Not Found with value: " + value + "\n" + e.getMessage(), "fail");
@@ -791,11 +790,11 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 
 	public void switchToFrameUsingXPath(String xpath) {
 		try {
-			getDriver().switchTo().frame(locateElement(Locators.XPATH,xpath));
+			getDriver().switchTo().frame(locateElement(Locators.XPATH, xpath));
 		} catch (NoSuchFrameException e) {
-			//reportStep("No such frame " + e.getMessage(), "warning", false);
+			// reportStep("No such frame " + e.getMessage(), "warning", false);
 		} catch (Exception e) {
-			//reportStep("No such frame " + e.getMessage(), "fail", false);
+			// reportStep("No such frame " + e.getMessage(), "fail", false);
 		}
 
 	}
@@ -848,7 +847,7 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 		long number = (long) Math.floor(Math.random() * 900000000L) + 10000000L;
 		try {
 			FileUtils.copyFile(getDriver().getScreenshotAs(OutputType.FILE),
-					new File("./"+Reporter.folderName+"/images/" + number + ".jpg"));
+					new File("./" + Reporter.folderName + "/images/" + number + ".jpg"));
 		} catch (WebDriverException e) {
 			reportStep("The browser has been closed." + e.getMessage(), "fail");
 		} catch (IOException e) {
@@ -885,7 +884,7 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 		}
 
 		try {
-			WebDriverWait wait = new WebDriverWait(getDriver(), 10);
+			WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 			wait.until(ExpectedConditions.invisibilityOf(element));
 		} catch (Exception e) {
 			reportStep("Element did not appear after 10 seconds", "fail", false);
@@ -904,7 +903,7 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 
 	public void chooseDate(WebElement ele, String data) {
 		try {
-			getDriver().executeScript("arguments[0].setAttribute('value', '" + data +"')", ele);
+			getDriver().executeScript("arguments[0].setAttribute('value', '" + data + "')", ele);
 			reportStep("The Data :" + data + " entered Successfully", "pass");
 		} catch (ElementNotInteractableException e) {
 			reportStep("The Element " + ele + " is not Interactable \n" + e.getMessage(), "fail");
@@ -927,11 +926,11 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 			Robot robot = new Robot();
 
 			// Enter to confirm it is uploaded
-			robot.keyPress(KeyEvent.VK_CONTROL);			
+			robot.keyPress(KeyEvent.VK_CONTROL);
 			robot.keyPress(KeyEvent.VK_V);
 
 			robot.keyRelease(KeyEvent.VK_V);
-			robot.keyRelease(KeyEvent.VK_CONTROL);	
+			robot.keyRelease(KeyEvent.VK_CONTROL);
 
 			Thread.sleep(5000);
 			robot.keyPress(KeyEvent.VK_ENTER);
@@ -939,14 +938,15 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 			reportStep("The file is selected Successfully", "pass");
 		} catch (Exception e) {
 			reportStep("The file is not selected Successfully", "fail");
-		} 
+		}
 
 	}
 
 	public void fileUploadWithJs(WebElement ele, String data) {
 		try {
-			
-			clickUsingJs(ele);;
+
+			clickUsingJs(ele);
+			;
 			pause(2000);
 
 			// Store the copied text in the clipboard
@@ -957,11 +957,11 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 			Robot robot = new Robot();
 
 			// Enter to confirm it is uploaded
-			robot.keyPress(KeyEvent.VK_CONTROL);			
+			robot.keyPress(KeyEvent.VK_CONTROL);
 			robot.keyPress(KeyEvent.VK_V);
 
 			robot.keyRelease(KeyEvent.VK_V);
-			robot.keyRelease(KeyEvent.VK_CONTROL);	
+			robot.keyRelease(KeyEvent.VK_CONTROL);
 
 			Thread.sleep(5000);
 			robot.keyPress(KeyEvent.VK_ENTER);
@@ -969,7 +969,7 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 			reportStep("The file is selected Successfully", "pass");
 		} catch (Exception e) {
 			reportStep("The file is not selected Successfully", "fail");
-		} 
+		}
 
 	}
 
@@ -977,13 +977,12 @@ public class SeleniumBase extends Reporter implements Browser, Element  {
 	public void executeTheScript(String js, WebElement ele) {
 		getDriver().executeScript(js, ele);
 	}
-	
+
 	public static void generateProjectAndAuctionIds() {
 		int ranNum1 = (int) (Math.random() * 10000);
-		int ranNum2 = ranNum1+9999;
+		int ranNum2 = ranNum1 + 9999;
 		projectId = Integer.toString(ranNum1);
 		auctionRef = Integer.toString(ranNum2);
 	}
 
-	
 }

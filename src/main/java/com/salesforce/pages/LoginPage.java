@@ -5,15 +5,15 @@ import com.framework.testng.api.base.ProjectSpecificMethods;
 
 public class LoginPage extends ProjectSpecificMethods{
 	
-	public LoginPage enterUsername(String data) {
-		clearAndType(locateElement(Locators.ID, "username"), data);
-		reportStep(data+" entered successfully","pass");
+	public LoginPage enterUsername() {
+		clearAndType(locateElement(Locators.ID, "username"),prop.getProperty("username"));
+		reportStep(" entered successfully","pass");
 		return this;
 	}
 	
-	public LoginPage enterPassword(String data) {
-		clearAndType(locateElement(Locators.ID, "password"), data);
-		reportStep(data+" entered successfully","pass");
+	public LoginPage enterPassword() {
+		clearAndType(locateElement(Locators.ID, "password"), prop.getProperty("password"));
+		reportStep(" entered successfully","pass");
 		return this;
 	}
 	
